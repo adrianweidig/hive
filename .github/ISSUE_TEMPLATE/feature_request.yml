@@ -1,0 +1,10 @@
+name: Verbesserung vorschlagen
+description: Den tatsächlichen Anwendungsfall und die kleinste hilfreiche Änderung beschreiben.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Konkreter Bedarf
+      description: Den tatsächlichen Anwendungsfall und die kleinste hilfreiche Änderung beschreiben. Keine Zugangsdaten oder personenbezogenen Daten einfügen.
+    validations:
+      required: true

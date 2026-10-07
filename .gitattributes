@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.xlsm binary
+*.png binary
+*.xcf binary
+*.pdn binary
+start_wsl.ps1 -text
+Hive_Workspace/** -text

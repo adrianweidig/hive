@@ -1,0 +1,49 @@
+name: Release Artifact
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: ZIP und Commit-Notizen erzeugen
+        env:
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          EVENT: ${{ github.event_name }}
+          ACTOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          project="${REPO##*/}"
+          safe_branch="$(printf '%s' "$BRANCH" | tr -c '[:alnum:]._' '-')"
+          short="${SHA:0:12}"
+          filename="${project}-${safe_branch}-${short}.zip"
+          git archive --format=zip --prefix="${project}/" --output="artifacts/$filename" "$SHA"
+          {
+            printf '# Commit-Artefakt\n\n'
+            printf 'Repository: %s\nBranch: %s\nCommit: %s\nKurz-SHA: %s\n' "$REPO" "$BRANCH" "$SHA" "$short"
+            printf 'Event: %s\nActor: %s\nUTC: %s\nZIP: %s\n\n' "$EVENT" "$ACTOR" "$(date -u +%FT%TZ)" "$filename"
+            if tag="$(git describe --tags --abbrev=0 "$SHA" 2>/dev/null)"; then
+              printf '## Änderungen seit %s\n\n' "$tag"
+              git log --format='- %h %s' "$tag..$SHA"
+            else
+              printf '## Letzte Commits\n\n'
+              git log -10 --format='- %h %s' "$SHA"
+            fi
+          } > artifacts/RELEASE_NOTES.md
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: source-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30

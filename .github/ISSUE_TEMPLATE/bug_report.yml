@@ -1,0 +1,10 @@
+name: Fehler melden
+description: Schritte, erwartetes Ergebnis, tatsächliches Ergebnis und verwendete Versionen.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Fehler und Reproduktion
+      description: Schritte, erwartetes Ergebnis, tatsächliches Ergebnis und verwendete Versionen. Keine Zugangsdaten oder personenbezogenen Daten einfügen.
+    validations:
+      required: true

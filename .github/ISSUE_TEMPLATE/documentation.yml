@@ -1,0 +1,10 @@
+name: Dokumentation korrigieren
+description: Datei oder Abschnitt und eine belegbare Korrektur nennen.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Betroffene Dokumentation
+      description: Datei oder Abschnitt und eine belegbare Korrektur nennen. Keine Zugangsdaten oder personenbezogenen Daten einfügen.
+    validations:
+      required: true
